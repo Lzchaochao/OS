@@ -6,7 +6,7 @@ package progress.obj;
 public class PCB {
     private int id;
 
-    public PCB(int id){
+    public PCB(int id) {
         this.id = id;
     }
 
@@ -16,5 +16,11 @@ public class PCB {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public void aWake() {
+    }
+
+    public void block() {
     }
 }
