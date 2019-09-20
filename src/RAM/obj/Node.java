@@ -1,6 +1,6 @@
 package RAM.obj;
 
-import java.util.LinkedList;
+import progress.obj.PCB;
 
 public class Node {
     private SpaceAssignment space;

@@ -1,5 +1,7 @@
 package RAM.obj;
 
+import progress.obj.PCB;
+
 /**
  * 内存空间分配表
  */

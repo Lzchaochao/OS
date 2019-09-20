@@ -1,5 +1,7 @@
 package RAM.obj;
 
+import progress.obj.PCB;
+
 import java.util.LinkedList;
 import java.util.List;
 
