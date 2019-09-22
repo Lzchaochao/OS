@@ -57,7 +57,14 @@ public class Device {
     public static PCB[][] getDeviceWaitQueue() {
         PCB[][] table = new PCB[DEVICE_AMOUNT][];
         for (int i = 0; i < DEVICE_AMOUNT; i++) {
-            table[i] = deviceQueue.get(i).isEmpty() ? new PCB[0] : (PCB[]) (deviceQueue.get(i).toArray());
+            PCB[] devices = new PCB[deviceQueue.get(i).size()];
+            Iterator<DeviceAssignment> ite = deviceQueue.get(i).iterator();
+            int j = 0;
+            while (ite.hasNext()) {
+                devices[j] = ite.next().getPcb();
+                j++;
+            }
+            table[i] = devices;
         }
         return table;
     }

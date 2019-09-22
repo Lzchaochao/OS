@@ -18,16 +18,19 @@ public class Main {
                 System.out.println("input progress id and device type(0 to A, 1 to B or 2 to C)");
                 int id = input.nextInt();
                 int type = input.nextInt();
-                int time = (int) (Math.random() * 20) + 20;
+                int time = (int) (Math.random() * 2) + 3;
                 PCB pcb = new PCB(id);
                 Device.applyDevice(type, time, pcb);
             } else if (in == 2) {
                 System.out.println("0 to wait queue, 1 to use list");
+                out.changeOutType();
             } else if (in == 3) {
-                System.out.println("input length");
-                int length = input.nextInt();
+                int length = 20;
                 while (length-- > 0) {
-
+                    int id = (int)(Math.random()*1000);
+                    int time = (int) (Math.random() * 2) + 3;
+                    int type = (int)(Math.random()*3);
+                    Device.applyDevice(type, time, new PCB(id));
                 }
             }
         }
