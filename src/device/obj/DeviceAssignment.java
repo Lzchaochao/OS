@@ -1,15 +1,16 @@
 package device.obj;
 
 import progress.obj.PCB;
+
 import java.util.Vector;
 
 public class DeviceAssignment extends Thread {
     private PCB pcb;
     private int time;
-    private Vector<DeviceAssignment> list;
+    private DeviceAssignment[] list;
     private int type;
 
-    DeviceAssignment(PCB pcb, int useTime, Vector<DeviceAssignment> list, int type) {
+    DeviceAssignment(PCB pcb, int useTime, DeviceAssignment[] list, int type) {
         this.pcb = pcb;
         this.time = useTime;
         this.list = list;
@@ -29,12 +30,17 @@ public class DeviceAssignment extends Thread {
             }
         }
         //io结束
-        list.remove(this);
         pcb.aWake();
+        for (int i = 0; i < list.length; i++) {
+            if (list[i] != null && list[i].getPcb() == pcb) {
+                list[i] = null;
+                break;
+            }
+        }
         Device.checkDeviceUseStatus(type);
     }
 
-    PCB getPcb(){
+    PCB getPcb() {
         return pcb;
     }
 }

@@ -16,32 +16,6 @@ public class OutPutThread extends Thread {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-//            if (outType == WAIT_QUEUE) {
-//                PCB[][] pcbs = Device.getDeviceWaitQueue();
-//                System.out.println();
-//                System.out.println();
-//                for (int i = 0; i < pcbs.length; i++) {
-//                    for (int j = 0; j < pcbs[i].length; j++) {
-//                        System.out.printf("%4s   ", pcbs[i][j]);
-//                    }
-//                    System.out.println();
-//                }
-//                System.out.println();
-//                System.out.println();
-//
-//            } else if (outType == USE_LIST) {
-//                PCB[][] pcbs = Device.getDeviceUseTable();
-//                System.out.println();
-//                System.out.println();
-//                for (int i = 0; i < pcbs.length; i++) {
-//                    for (int j = 0; j < pcbs[i].length; j++) {
-//                        System.out.printf("%4s   ", pcbs[i][j]);
-//                    }
-//                    System.out.println();
-//                }
-//                System.out.println();
-//                System.out.println();
-//            }
             System.out.println();
             System.out.println();
             PCB[][] waitQueue = Device.getDeviceWaitQueue();

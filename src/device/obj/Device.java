@@ -14,13 +14,13 @@ public class Device {
     private static final int DEVICE_AMOUNT = 3;
 
     private static int[] deviceSize = new int[]{A_SIZE, B_SIZE, C_SIZE};
-    private static ArrayList<Vector<DeviceAssignment>> deviceUseTable = new ArrayList<>();
+    private static DeviceAssignment[][] deviceUseTable = new DeviceAssignment[3][];
     private static ArrayList<Queue<DeviceAssignment>> deviceQueue = new ArrayList<>();
 
     static {
-        deviceUseTable.add(new Vector<>(A_SIZE));
-        deviceUseTable.add(new Vector<>(B_SIZE));
-        deviceUseTable.add(new Vector<>(C_SIZE));
+        deviceUseTable[0] = new DeviceAssignment[A_SIZE];
+        deviceUseTable[1] = new DeviceAssignment[B_SIZE];
+        deviceUseTable[2] = new DeviceAssignment[C_SIZE];
         deviceQueue.add(new LinkedList<>());
         deviceQueue.add(new LinkedList<>());
         deviceQueue.add(new LinkedList<>());
@@ -28,27 +28,32 @@ public class Device {
 
     public static void applyDevice(int type, int time, PCB pcb) {
         //每次申请设备时，都将进程放入设备等待队列中
-        DeviceAssignment assignment = new DeviceAssignment(pcb, time, deviceUseTable.get(type), type);
+        DeviceAssignment assignment = new DeviceAssignment(pcb, time, deviceUseTable[type], type);
         pcb.block();
         deviceQueue.get(type).offer(assignment);
         checkDeviceUseStatus(type);
     }
 
     static synchronized void checkDeviceUseStatus(int type) {
-        Vector<DeviceAssignment> list = deviceUseTable.get(type);
+        DeviceAssignment[] list = deviceUseTable[type];
         Queue<DeviceAssignment> queue = deviceQueue.get(type);
-        if (list.size() < deviceSize[type] && !queue.isEmpty()) {
+        if (!isArrayFull(list) && !queue.isEmpty()) {
             DeviceAssignment device = queue.poll();
             device.start();
-            deviceUseTable.get(type).add(device);
+            for (int i = 0; i < deviceUseTable[type].length; i++) {
+                if (deviceUseTable[type][i] == null) {
+                    deviceUseTable[type][i] = device;
+                    break;
+                }
+            }
         }
     }
 
     public static PCB[][] getDeviceUseTable() {
         PCB[][] table = new PCB[][]{new PCB[A_SIZE], new PCB[B_SIZE], new PCB[C_SIZE]};
         for (int i = 0; i < DEVICE_AMOUNT; i++) {
-            for (int j = 0; j < deviceUseTable.get(i).size(); j++) {
-                table[i][j] = deviceUseTable.get(i).get(j) == null ? null : deviceUseTable.get(i).get(j).getPcb();
+            for (int j = 0; j < deviceUseTable[i].length; j++) {
+                table[i][j] = deviceUseTable[i][j] == null ? null : deviceUseTable[i][j].getPcb();
             }
         }
         return table;
@@ -67,5 +72,16 @@ public class Device {
             table[i] = devices;
         }
         return table;
+    }
+
+    private static boolean isArrayFull(DeviceAssignment[] array) {
+        boolean judge = true;
+        for (DeviceAssignment device : array) {
+            if (device == null) {
+                judge = false;
+                break;
+            }
+        }
+        return judge;
     }
 }
