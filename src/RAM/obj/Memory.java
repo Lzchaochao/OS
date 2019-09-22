@@ -63,7 +63,7 @@ public class Memory {
         memoryTable.reviseTable();
         Node node = memoryTable.getTableHead();
         while (node != null) {
-            byte id = (byte) (node.getPCB() == null ? 0 : node.getPCB().getId());
+            byte id = (byte) (node.getPcb() == null ? 0 : node.getPcb().getId());
             for (int i = node.getAddress(); i < node.getAddress() + node.getSize(); i++) {
                 userMemory[i] = id;
             }

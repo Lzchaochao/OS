@@ -2,42 +2,40 @@ package RAM.obj;
 
 import progress.obj.PCB;
 
-public class Node {
+class Node {
     private SpaceAssignment space;
     private Node next;
 
-
-
-    public Node(SpaceAssignment space){
+    Node(SpaceAssignment space){
         this.space = space;
         next = null;
     }
 
-    public SpaceAssignment getSpace() {
+    SpaceAssignment getSpace() {
         return space;
     }
 
-    public void setSpace(SpaceAssignment space) {
+    void setSpace(SpaceAssignment space) {
         this.space = space;
     }
 
-    public Node getNext() {
+    Node getNext() {
         return next;
     }
 
-    public void setNext(Node next) {
+    void setNext(Node next) {
         this.next = next;
     }
 
-    public PCB getPCB(){
+    PCB getPcb(){
         return space.getPcb();
     }
 
-    public int getAddress(){
+    int getAddress(){
         return space.getAddress();
     }
 
-    public int getSize(){
+    int getSize(){
         return space.getSize();
     }
 }

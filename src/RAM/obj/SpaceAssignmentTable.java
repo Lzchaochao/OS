@@ -5,27 +5,27 @@ import progress.obj.PCB;
 /**
  * 内存空间分配表
  */
-public class SpaceAssignmentTable {
+class SpaceAssignmentTable {
     private Node head;
-    private final int MIN_MEMORY_LEFT = 5;
     private final int MAX_MEMORY = 512;
 
-    public SpaceAssignmentTable() {
+    SpaceAssignmentTable() {
         head = new Node(new SpaceAssignment(0, MAX_MEMORY, null));
     }
 
-    public Node getTableHead() {
+    Node getTableHead() {
         return head;
     }
 
     /**
      * 传入需要分配的内存空间大小，采用首次适配，设立最大剩余空间为5，如果分配后剩余的空间小于5则将剩余的空间也分配给该进程
      */
-    public SpaceAssignment apply(SpaceAssignment apply) {
+    SpaceAssignment apply(SpaceAssignment apply) {
+        int minMemorySize = 5;
         SpaceAssignment spaceAssignment = null;
         Node node = head;
         while (node != null) {
-            if (node.getPCB() != null) {
+            if (node.getPcb() != null) {
                 //如果该空间已被分配到某个PCB，则不为空
                 node = node.getNext();
                 continue;
@@ -35,7 +35,7 @@ public class SpaceAssignmentTable {
                 node = node.getNext();
                 continue;
             }
-            if (node.getSize() - MIN_MEMORY_LEFT <= apply.getSize()) {
+            if (node.getSize() - minMemorySize <= apply.getSize()) {
                 //如果空间大于申请长度同时分配后的剩余空间小于指定长度MIN，则将空间全部分配
                 spaceAssignment = new SpaceAssignment(node.getAddress(), node.getSize(), apply.getPcb());
                 node.setSpace(spaceAssignment);
@@ -54,17 +54,17 @@ public class SpaceAssignmentTable {
         return spaceAssignment;
     }
 
-    public SpaceAssignment free(PCB pcb) {
+    SpaceAssignment free(PCB pcb) {
         SpaceAssignment findSpace = null;
         Node node = head;
         Node preNode = head;
         while (node != null) {
-            if (node.getPCB() != pcb) {
+            if (node.getPcb() != pcb) {
                 preNode = node;
                 node = node.getNext();
                 continue;
             }
-            if (preNode != node && preNode.getPCB() == null) {
+            if (preNode != node && preNode.getPcb() == null) {
                 //如果节点有前节点且前节点为空，则连接两个空间
                 SpaceAssignment space = preNode.getSpace();
                 space.setSize(space.getSize() + node.getSize());
@@ -73,7 +73,7 @@ public class SpaceAssignmentTable {
                 findSpace = space;
                 node = preNode;
             }
-            if (node.getNext() != null && node.getNext().getPCB() == null) {
+            if (node.getNext() != null && node.getNext().getPcb() == null) {
                 //如果节点有后节点且后节点为空，则连接两个空间
                 Node nextNode = node.getNext();
                 SpaceAssignment space = node.getSpace();
@@ -90,14 +90,12 @@ public class SpaceAssignmentTable {
         return findSpace;
     }
 
-    public void reviseTable() {
+    void reviseTable() {
         Node node = head;
         head = new Node(new SpaceAssignment(0, MAX_MEMORY, null));
-
-        int spaceAccount = 0;
         while (node != null) {
-            if(node.getPCB()!=null){
-                apply(new SpaceAssignment(-1, node.getSize(), node.getPCB()));
+            if(node.getPcb()!=null){
+                apply(new SpaceAssignment(-1, node.getSize(), node.getPcb()));
             }
             node = node.getNext();
         }

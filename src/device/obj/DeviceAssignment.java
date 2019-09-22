@@ -1,9 +1,6 @@
 package device.obj;
 
 import progress.obj.PCB;
-
-import java.util.ArrayList;
-import java.util.Queue;
 import java.util.Vector;
 
 public class DeviceAssignment extends Thread {
@@ -12,7 +9,7 @@ public class DeviceAssignment extends Thread {
     private Vector<DeviceAssignment> list;
     private int type;
 
-    public DeviceAssignment(PCB pcb, int useTime, Vector<DeviceAssignment> list, int type) {
+    DeviceAssignment(PCB pcb, int useTime, Vector<DeviceAssignment> list, int type) {
         this.pcb = pcb;
         this.time = useTime;
         this.list = list;
@@ -33,10 +30,10 @@ public class DeviceAssignment extends Thread {
         }
         list.remove(this);
         pcb.aWake();
-        Device.checkDeviceUseStatu(type);
+        Device.checkDeviceUseStatus(type);
     }
 
-    public PCB getPcb(){
+    PCB getPcb(){
         return pcb;
     }
 }

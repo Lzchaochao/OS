@@ -16,33 +16,33 @@ public class SpaceAssignment {
         pcb = null;
     }
 
-    public SpaceAssignment(int address, int size, PCB pcb) {
+    SpaceAssignment(int address, int size, PCB pcb) {
         this.address = address;
         this.size = size;
         this.pcb = pcb;
     }
 
-    public PCB getPcb() {
+    PCB getPcb() {
         return pcb;
     }
 
-    public void setPcb(PCB pcb) {
+    void setPcb(PCB pcb) {
         this.pcb = pcb;
     }
 
-    public int getAddress() {
+    int getAddress() {
         return address;
     }
 
-    public void setAddress(int address) {
+    void setAddress(int address) {
         this.address = address;
     }
 
-    public int getSize() {
+    int getSize() {
         return size;
     }
 
-    public void setSize(int size) {
+    void setSize(int size) {
         this.size = size;
     }
 }

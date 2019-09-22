@@ -1,7 +1,6 @@
 package device.obj;
 
 import progress.obj.PCB;
-
 import java.util.*;
 
 public class Device {
@@ -29,10 +28,10 @@ public class Device {
         //每次申请设备时，都将进程放入设备等待队列中
         DeviceAssignment assignment = new DeviceAssignment(pcb, time, deviceUseTable.get(type), type);
         deviceQueue.get(type).offer(assignment);
-        checkDeviceUseStatu(type);
+        checkDeviceUseStatus(type);
     }
 
-    public static synchronized void checkDeviceUseStatu(int type) {
+    static synchronized void checkDeviceUseStatus(int type) {
         Vector<DeviceAssignment> list = deviceUseTable.get(type);
         Queue<DeviceAssignment> queue = deviceQueue.get(type);
         if (list.size() < deviceSize[type] && !queue.isEmpty()) {
