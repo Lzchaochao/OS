@@ -57,7 +57,7 @@ public class Device {
     public static PCB[][] getDeviceWaitQueue() {
         PCB[][] table = new PCB[DEVICE_AMOUNT][];
         for (int i = 0; i < DEVICE_AMOUNT; i++) {
-            table[i] = (PCB[]) (deviceQueue.get(i).toArray());
+            table[i] = deviceQueue.get(i).isEmpty() ? new PCB[0] : (PCB[]) (deviceQueue.get(i).toArray());
         }
         return table;
     }

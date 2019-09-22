@@ -23,4 +23,9 @@ public class PCB {
 
     public void block() {
     }
+
+    @Override
+    public String toString() {
+        return "" + id;
+    }
 }
