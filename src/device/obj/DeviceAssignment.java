@@ -28,6 +28,7 @@ public class DeviceAssignment extends Thread {
                 e.printStackTrace();
             }
         }
+        //io结束
         list.remove(this);
         pcb.aWake();
         Device.checkDeviceUseStatus(type);
