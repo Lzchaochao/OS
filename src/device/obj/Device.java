@@ -2,54 +2,60 @@ package device.obj;
 
 import progress.obj.PCB;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 public class Device {
-    public final int A_DEVICE = 0;
-    public final int B_DEVICE = 1;
-    public final int C_DEVICE = 2;
-    private final int A_SIZE = 2;
-    private final int B_SIZE = 3;
-    private final int C_SIZE = 3;
+    public static final int A_DEVICE = 0;
+    public static final int B_DEVICE = 1;
+    public static final int C_DEVICE = 2;
+    private static final int A_SIZE = 2;
+    private static final int B_SIZE = 3;
+    private static final int C_SIZE = 3;
 
-    private int[] deviceSize = new int[]{A_SIZE, B_SIZE, C_SIZE};
-    private ArrayList[] deviceUseTable = new ArrayList[]{new ArrayList<DeviceAssignment>(A_SIZE),
-            new ArrayList<DeviceAssignment>(B_SIZE),
-            new ArrayList<DeviceAssignment>(C_SIZE)};
-    private Queue[] deviceQueue = new Queue[]{new LinkedList<PCB>(), new LinkedList<PCB>(), new LinkedList<PCB>()};
+    private static int[] deviceSize = new int[]{A_SIZE, B_SIZE, C_SIZE};
+    private static ArrayList<Vector<DeviceAssignment>> deviceUseTable = new ArrayList<Vector<DeviceAssignment>>();
+    private static ArrayList<Queue<DeviceAssignment>> deviceQueue = new ArrayList<Queue<DeviceAssignment>>();
 
-    public boolean applyDevice(int type, int time, PCB pcb) {
-        boolean success = false;
-        if (deviceUseTable[type].size() < deviceSize[type]) {
-            //已分配的设备数小于设备最大数，则可以进行分配
-            DeviceAssignment assignment = new DeviceAssignment(pcb, time, deviceUseTable[type]);
-            assignment.start();
-            success = true;
-        } else {
-            deviceQueue[type].offer(pcb);
-            pcb.block();
-        }
-        return success;
+    static {
+        deviceQueue.add(new LinkedList<DeviceAssignment>());
+        deviceQueue.add(new LinkedList<DeviceAssignment>());
+        deviceQueue.add(new LinkedList<DeviceAssignment>());
+        deviceUseTable.add(new Vector<DeviceAssignment>(A_SIZE));
+        deviceUseTable.add(new Vector<DeviceAssignment>(B_SIZE));
+        deviceUseTable.add(new Vector<DeviceAssignment>(C_SIZE));
     }
 
+    public static void applyDevice(int type, int time, PCB pcb) {
+        //每次申请设备时，都将进程放入设备等待队列中
+        DeviceAssignment assignment = new DeviceAssignment(pcb, time, deviceUseTable.get(type), type);
+        deviceQueue.get(type).offer(assignment);
+        checkDeviceUseStatu(type);
+    }
 
-    public PCB[][] getDeviceUseTable() {
+    public static synchronized void checkDeviceUseStatu(int type) {
+        Vector<DeviceAssignment> list = deviceUseTable.get(type);
+        Queue<DeviceAssignment> queue = deviceQueue.get(type);
+        if (list.size() < deviceSize[type] && !queue.isEmpty()) {
+            DeviceAssignment device = queue.poll();
+            device.start();
+            deviceUseTable.get(type).add(device);
+        }
+    }
+
+    public static PCB[][] getDeviceUseTable() {
         PCB[][] table = new PCB[][]{new PCB[2], new PCB[3], new PCB[3]};
         for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < deviceUseTable[i].size(); j++) {
-                table[i][j] = ((DeviceAssignment) (deviceUseTable[i].get(j))).getPcb();
+            for (int j = 0; j < deviceUseTable.get(i).size(); j++) {
+                table[i][j] = ((DeviceAssignment) (deviceUseTable.get(i).get(j))).getPcb();
             }
         }
         return table;
     }
 
-    public PCB[][] getDeviceWaitQueue() {
+    public static PCB[][] getDeviceWaitQueue() {
         PCB[][] table = new PCB[3][];
         for (int i = 0; i < 3; i++) {
-            table[i] = (PCB[]) (deviceQueue[i].toArray());
+            table[i] = (PCB[]) (deviceQueue.get(i).toArray());
         }
         return table;
     }

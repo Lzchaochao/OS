@@ -3,20 +3,26 @@ package device.obj;
 import progress.obj.PCB;
 
 import java.util.ArrayList;
+import java.util.Queue;
+import java.util.Vector;
 
 public class DeviceAssignment extends Thread {
     private PCB pcb;
     private int time;
-    private ArrayList list;
+    private Vector<DeviceAssignment> list;
+    private int type;
 
-    public DeviceAssignment(PCB pcb, int useTime, ArrayList list) {
+    public DeviceAssignment(PCB pcb, int useTime, Vector<DeviceAssignment> list, int type) {
         this.pcb = pcb;
         this.time = useTime;
         this.list = list;
+        this.type = type;
     }
 
     @Override
     public void run() {
+        pcb.block();
+        //开始io，阻塞进程
         while (time > 0) {
             time--;
             try {
@@ -25,11 +31,12 @@ public class DeviceAssignment extends Thread {
                 e.printStackTrace();
             }
         }
-        pcb.aWake();//io结束，重新唤醒进程
         list.remove(this);
+        pcb.aWake();
+        Device.checkDeviceUseStatu(type);
     }
 
-    public PCB getPcb() {
+    public PCB getPcb(){
         return pcb;
     }
 }
